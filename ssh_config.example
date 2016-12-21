@@ -1,0 +1,4 @@
+Host cfsgd-ec2
+  HostName ec2-54-201-58-52.us-west-2.compute.amazonaws.com
+  User ubuntu
+  IdentityFile CF_ParallelSGD.pem.cer

@@ -1,0 +1,10 @@
+[user]
+	name = Jinman Zhao
+	email = jinman.zhao@gmail.com
+[alias]
+    st = status
+    cm = commit
+    co = checkout
+    br = branch
+    unstage = reset HEAD --
+    last = log -1 HEAD
