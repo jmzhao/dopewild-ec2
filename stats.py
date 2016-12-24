@@ -6,25 +6,37 @@ try :
 except :
     print("Specify a directory!")
     sys.exit(1)
+    
+def parse_log(file) :
+    data = list()
+    for line in file :
+        if line[:5] == 'epoch' :
+            line_data = dict()
+            sl = line.split()
+            for i in range(len(sl) // 2) :
+                key = sl[2*i]
+                value = float(sl[2*i+1])
+                line_data[key] = value
+            data.append(line_data)
+    return data
+    
+def save_stat(file, stat) :
+    attrs = list(stat[0].keys())
+    print(', '.join(attrs), file=file)
+    for line_stat in stat :
+        print(', '.join(str(line_stat[a]) for a in attrs), file=file)
 
 for root, dirs, files in os.walk(DIR):
     print("Current directory", root)
-    print("Sub directories", dirs)
-    print("Files", files)
+#    print("Sub directories", dirs)
+#    print("Files", files)
     all_data = dict()
     for file in files :
         if file[-4:] == '.log' :
-            data = list()
-            for line in open(os.path.join(root, file)) :
-                if line[:5] == 'epoch' :
-                    line_data = dict()
-                    sl = line.split()
-                    for i in range(len(sl) // 2) :
-                        key = sl[2*i]
-                        value = float(sl[2*i+1])
-                        line_data[key] = value
-                    data.append(line_data)
+            print('prosessing %s...'%file)
+            data = parse_log(open(os.path.join(root, file)))
             all_data[file] = data
+            save_stat(open(os.path.join(root, file+'.csv'), 'w'), data)
     
     n_data = len(all_data)
     if n_data == 0 : continue
@@ -42,10 +54,6 @@ for root, dirs, files in os.walk(DIR):
             line_stat[attr] /= n_data
         stat.append(line_stat)
         
-    with open(os.path.join(root, 'average.csv'), 'w') as f :
-        attrs = list(stat[0].keys())
-        print(', '.join(attrs), file=f)
-        for line_stat in stat :
-            print(', '.join(str(line_stat[a]) for a in attrs), file=f)
+    save_stat(open(os.path.join(root, 'average.csv'), 'w'), stat)
                 
             
